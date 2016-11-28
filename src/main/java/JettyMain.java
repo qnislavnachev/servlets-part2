@@ -1,6 +1,7 @@
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import servlets.CounterServlet;
+import servlets.PageServlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -19,6 +20,7 @@ public class JettyMain {
       public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
         servletContext.addServlet("CounterServlet", new CounterServlet()).addMapping("/", "/link1", "/link2", "/link3");
+        servletContext.addServlet("PageServlet",new PageServlet()).addMapping("/","/page1","/page2","/page3");
       }
 
       @Override

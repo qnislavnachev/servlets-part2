@@ -7,9 +7,13 @@
 
 # Package Files #
 .idea
+.target
 *.jar
 *.war
 *.ear
+*.iws
+*.ipr
+*.iml
 *.out
 
 # User-specific stuff:
