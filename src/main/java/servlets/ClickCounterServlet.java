@@ -2,6 +2,8 @@ package servlets;
 
 import adapter.ClickedLinks;
 import adapter.HtmlTemplate;
+import core.Link;
+import core.Template;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,10 +17,10 @@ import java.util.Map;
  * @author Vasil Mitov <v.mitov.clouway@gmail.com>
  */
 public class ClickCounterServlet extends HttpServlet {
-  private HtmlTemplate template;
-  private ClickedLinks links;
+  private Template template;
+  private Link links;
 
-  public ClickCounterServlet(HtmlTemplate template, ClickedLinks links) {
+  public ClickCounterServlet(Template template, Link links) {
     this.template = template;
     this.links = links;
   }
@@ -31,7 +33,7 @@ public class ClickCounterServlet extends HttpServlet {
     render(template, writer);
   }
 
-  private void render(HtmlTemplate template, PrintWriter writer) {
+  private void render(Template template, PrintWriter writer) {
     writer.print(template.evaluate());
     writer.flush();
   }

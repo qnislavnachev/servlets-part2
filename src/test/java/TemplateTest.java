@@ -11,36 +11,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TemplateTest {
   @Test
   public void singleVariable() throws Exception {
-    Template template=new HtmlTemplate("This is a single HTML ${value}");
-    template.put("value","template");
-    String actual=template.evaluate();
-    String expected="This is a single HTML template";
-    assertThat(actual,is(expected));
+    Template template = new HtmlTemplate("This is a single HTML ${value}");
+    template.put("value", "template");
+    String actual = template.evaluate();
+    String expected = "This is a single HTML template";
+    assertThat(actual, is(expected));
   }
 
   @Test
   public void manyVariables() throws Exception {
     Template template = new HtmlTemplate("This template has not ${single} variable but ${many}");
-    template.put("single","one");
-    template.put("many","two");
-    String actual=template.evaluate();
-    String expected="This template has not one variable but two";
-    assertThat(actual,is(expected));
-  }
-
-  @Test
-  public void putAnEmptyString() throws Exception {
-    Template template=new HtmlTemplate("This template has nothing${empty}");
-    template.put("empty","");
-    String actual=template.evaluate();
-    String expected="This template has nothing";
-    assertThat(actual,is(expected));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testingNull() throws Exception {
-    Template template=new HtmlTemplate("We will now try ${null}");
-    template.put("null",null);
-    template.evaluate();
+    template.put("single", "one");
+    template.put("many", "two");
+    String actual = template.evaluate();
+    String expected = "This template has not one variable but two";
+    assertThat(actual, is(expected));
   }
 }

@@ -45,7 +45,7 @@ public class ClickingLinksTest {
     clickeLinks.click("link3");
     clickeLinks.click("link3");
     clickeLinks.click("link3");
-    LinkedHashMap<String, Integer> actual = new LinkedHashMap<>();
+    LinkedHashMap<String, Integer> actual = new LinkedHashMap<String, Integer>();
     actual.put("link1", 3);
     actual.put("link2", 2);
     actual.put("link3", 4);
