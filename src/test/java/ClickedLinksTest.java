@@ -10,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author Vasil Mitov <v.mitov.clouway@gmail.com>
  */
-public class ClickingLinksTest {
+public class ClickedLinksTest {
   private Link clickeLinks = new ClickedLinks(new LinkedHashMap<String, Integer>() {{
     put("link1", 0);
     put("link2", 0);

@@ -1,7 +1,5 @@
 package servlets;
 
-import adapter.ClickedLinks;
-import adapter.HtmlTemplate;
 import core.Link;
 import core.Template;
 
@@ -11,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
 /**
  * @author Vasil Mitov <v.mitov.clouway@gmail.com>
@@ -27,25 +24,21 @@ public class ClickCounterServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String link = req.getRequestURL().toString();
-    evaluateClick(link);
-    PrintWriter writer = resp.getWriter();
-    render(template, writer);
-  }
+    String uri = req.getRequestURI();
+    if (uri.contains("link")) {
+      String link = uri.substring(1, uri.length());
+      links.click(link);
+    }
 
-  private void render(Template template, PrintWriter writer) {
-    writer.print(template.evaluate());
+    PrintWriter writer = resp.getWriter();
+    writer.print(getHtml(template));
     writer.flush();
   }
 
-  private void evaluateClick(String clickedLink) {
-    if (clickedLink.contains("link")) {
-      clickedLink = clickedLink.split("/")[3];
-      links.click(clickedLink);
+  private String getHtml(Template template) {
+    for (String currentLink : links.getClicks().keySet()) {
+      template.put(currentLink, links.getClicksFor(currentLink).toString());
     }
-    Map<String, Integer> clickedLinks = links.getClicks();
-    for (String link : clickedLinks.keySet()) {
-      template.put(link, links.getClicksFor(link).toString());
-    }
+    return template.evaluate();
   }
 }

@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import servlets.ClickCounterServlet;
+import servlets.CounterServlet;
 import servlets.ResourceServlet;
 
 import javax.servlet.ServletContext;
@@ -11,6 +12,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -41,6 +43,11 @@ public class JettyMain {
       public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
         servletContext.addServlet("ClickCounterServlet", new ClickCounterServlet(indexTemplate, clickableLinks)).addMapping("/");
+        servletContext.addServlet("CounterServlet", new CounterServlet(indexTemplate, new HashMap<String, Integer>(){{
+          put("link1",0);
+          put("link2",0);
+          put("link3",0);
+        }})).addMapping("/counter");
         servletContext.addServlet("ResourceServlet", new ResourceServlet()).addMapping("/assets/*");
       }
 
