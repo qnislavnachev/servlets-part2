@@ -1,9 +1,7 @@
-import adapter.ClickedLinks;
 import adapter.HtmlTemplate;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import servlets.ClickCounterServlet;
 import servlets.CounterServlet;
 import servlets.ResourceServlet;
 
@@ -13,18 +11,12 @@ import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * @author Vasil Mitov <v.mitov.clouway@gmail.com>
  */
 public class JettyMain {
   public static void main(String[] args) {
-    final ClickedLinks clickableLinks = new ClickedLinks(new LinkedHashMap<String, Integer>() {{
-      put("link1", 0);
-      put("link2", 0);
-      put("link3", 0);
-    }});
 
     File indexHtml = new File("src/main/resources/servlets/index.html");
     String indexString = null;
@@ -42,11 +34,10 @@ public class JettyMain {
       @Override
       public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
-        servletContext.addServlet("ClickCounterServlet", new ClickCounterServlet(indexTemplate, clickableLinks)).addMapping("/");
-        servletContext.addServlet("CounterServlet", new CounterServlet(indexTemplate, new HashMap<String, Integer>(){{
-          put("link1",0);
-          put("link2",0);
-          put("link3",0);
+        servletContext.addServlet("CounterServlet", new CounterServlet(indexTemplate, new HashMap<String, Integer>() {{
+          put("link1", 0);
+          put("link2", 0);
+          put("link3", 0);
         }})).addMapping("/counter");
         servletContext.addServlet("ResourceServlet", new ResourceServlet()).addMapping("/assets/*");
       }

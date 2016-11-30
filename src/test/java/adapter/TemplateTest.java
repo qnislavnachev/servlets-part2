@@ -1,4 +1,5 @@
-import adapter.HtmlTemplate;
+package adapter;
+
 import core.Template;
 import org.junit.Test;
 

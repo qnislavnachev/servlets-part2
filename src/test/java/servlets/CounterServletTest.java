@@ -1,6 +1,5 @@
 package servlets;
 
-import core.Link;
 import core.Template;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -13,7 +12,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -26,15 +24,14 @@ public class CounterServletTest {
   public JUnitRuleMockery context = new JUnitRuleMockery();
 
   private Template template = context.mock(Template.class);
-  private Link links = context.mock(Link.class);
   private HttpServletRequest req = context.mock(HttpServletRequest.class);
   private HttpServletResponse resp = context.mock(HttpServletResponse.class);
 
   @Test
   public void happyPath() throws Exception {
     StringWriter out = new StringWriter();
-    final PrintWriter writer=new PrintWriter(out);
-    CounterServlet servlet = new CounterServlet (template, new HashMap<String, Integer>());
+    final PrintWriter writer = new PrintWriter(out);
+    CounterServlet servlet = new CounterServlet(template, new HashMap<String, Integer>());
 
     context.checking(new Expectations() {{
       oneOf(req).getRequestURI();
@@ -48,14 +45,14 @@ public class CounterServletTest {
     }});
     servlet.doGet(req, resp);
 
-    assertThat(out.toString(),is("test\n"));
+    assertThat(out.toString(), is("test\n"));
   }
 
   @Test
   public void clickLink() throws Exception {
     StringWriter out = new StringWriter();
-    final PrintWriter writer=new PrintWriter(out);
-    CounterServlet servlet = new CounterServlet (template, new HashMap<String, Integer>(){{
+    final PrintWriter writer = new PrintWriter(out);
+    CounterServlet servlet = new CounterServlet(template, new HashMap<String, Integer>() {{
       put("link1", 0);
       put("link2", 0);
     }});
