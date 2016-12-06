@@ -1,6 +1,5 @@
 package servlets;
 
-import core.Template;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
@@ -10,66 +9,81 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.*;
 
 /**
  * @author Vasil Mitov <v.mitov.clouway@gmail.com>
  */
-  public class CounterServletTest {
+public class CounterServletTest {
 
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
+  private CounterServlet servlet = new CounterServlet();
 
-    private Template template = context.mock(Template.class);
-    private HttpServletRequest req = context.mock(HttpServletRequest.class);
-    private HttpServletResponse resp = context.mock(HttpServletResponse.class);
+  @Rule
+  public JUnitRuleMockery context = new JUnitRuleMockery();
+  private HttpServletRequest req = context.mock(HttpServletRequest.class);
+  private HttpServletResponse resp = context.mock(HttpServletResponse.class);
+  private final StringWriter out = new StringWriter();
+  private final FakeHttpSession session = new FakeHttpSession();
+  private final PrintWriter writer = new PrintWriter(out);
 
-    @Test
-    public void happyPath() throws Exception {
-      StringWriter out = new StringWriter();
-      final PrintWriter writer = new PrintWriter(out);
-      CounterServlet servlet = new CounterServlet(template, new HashMap<String, Integer>());
+  @Test
+  public void happyPath() throws Exception {
+    context.checking(new Expectations() {{
+      oneOf(req).getSession();
+      will(returnValue(session));
+      oneOf(req).getRequestURI();
+      will(returnValue("/"));
+      oneOf(resp).getWriter();
+      will(returnValue(writer));
+    }});
 
-      context.checking(new Expectations() {{
-        oneOf(req).getRequestURI();
-        will(returnValue("sdfdsf"));
+    servlet.doGet(req, resp);
 
-        oneOf(resp).getWriter();
-        will(returnValue(writer));
+    assertThat(out.toString(), containsString("Link1 clicked 0"));
+    assertThat(out.toString(), containsString("Link2 clicked 0"));
+    assertThat(out.toString(), containsString("Link3 clicked 0"));
+  }
 
-        oneOf(template).evaluate();
-        will(returnValue("test"));
-      }});
-      servlet.doGet(req, resp);
+  @Test
+  public void clickingLink1() throws Exception {
+    context.checking(new Expectations() {{
+      atLeast(2).of(req).getSession();
+      will(returnValue(session));
+      atLeast(2).of(req).getRequestURI();
+      will(returnValue("/link1"));
+      atLeast(2).of(resp).getWriter();
+      will(returnValue(writer));
+    }});
 
-      assertThat(out.toString(), is("test\n"));
-    }
+    servlet.doGet(req, resp);
+    servlet.doGet(req, resp);
 
-    @Test
-    public void clickLink() throws Exception {
-      StringWriter out = new StringWriter();
-      final PrintWriter writer = new PrintWriter(out);
-      CounterServlet servlet = new CounterServlet(template, new HashMap<String, Integer>() {{
-        put("link1", 0);
-        put("link2", 0);
-      }});
+    assertThat(out.toString(), containsString("Link1 clicked 1"));
+    assertThat(out.toString(), containsString("Link2 clicked 0"));
+    assertThat(out.toString(), containsString("Link3 clicked 0"));
+  }
 
-      context.checking(new Expectations() {{
-        oneOf(req).getRequestURI();
-        will(returnValue("/link1"));
+  @Test
+  public void clickingAnotherLink() throws Exception {
+    context.checking(new Expectations() {{
+      atLeast(2).of(req).getSession();
+      will(returnValue(session));
+      atLeast(2).of(req).getRequestURI();
+      will(returnValue("/link2"));
+      atLeast(2).of(resp).getWriter();
+      will(returnValue(writer));
+    }});
 
-        oneOf(resp).getWriter();
-        will(returnValue(writer));
+    servlet.doGet(req, resp);
+    servlet.doGet(req, resp);
 
-        oneOf(template).put("link1", "1");
-        oneOf(template).put("link2", "0");
 
-        oneOf(template).evaluate();
-      }});
+    assertThat(out.toString(), containsString("Link1 clicked 0"));
+    assertThat(out.toString(), containsString("Link2 clicked 1"));
+    assertThat(out.toString(), containsString("Link3 clicked 0"));
+  }
 
-      servlet.doGet(req, resp);
-    }
 }
+

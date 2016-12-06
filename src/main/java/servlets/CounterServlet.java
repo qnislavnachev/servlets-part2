@@ -1,44 +1,55 @@
 package servlets;
 
-import core.Template;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  * @author Vasil Mitov <v.mitov.clouway@gmail.com>
  */
 public class CounterServlet extends HttpServlet {
-  private Template template;
-  private HashMap<String, Integer> links;
-
-  public CounterServlet(Template template, HashMap<String, Integer> links) {
-    this.template = template;
-    this.links = links;
-  }
-
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    HttpSession session = req.getSession();
     String uri = req.getRequestURI();
-
-    String link = uri.substring(1, uri.length());
-
-    if (links.containsKey(link)) {
-      Integer count = links.get(link);
-      links.put(link, count + 1);
+    if (!uri.equals("/")) {
+      clickLink(uri, session);
     }
+    PrintWriter out = resp.getWriter();
+    out.println("<!DOCTYPE html>\n" +
+            "<html>\n" +
+            "<head>\n" +
+            "    <meta charset=\"UTF-8\">\n" +
+            "    <title>Links</title>\n" +
+            "</head>\n" +
+            "<body>\n" +
+            "<h1>Click Links below as hard as you can</h1>\n" +
+            "<a href=\"link1\">Link1 clicked " + render("/link1", session) + "</a>\n" +
+            "<a href=\"link2\">Link2 clicked " + render("/link2", session) + "</a>\n" +
+            "<a href=\"link3\">Link3 clicked " + render("/link3", session) + "</a>\n" +
+            "</body>\n" +
+            "</html>");
+  }
 
-    for (Entry<String, Integer> entry : links.entrySet()) {
-      template.put(entry.getKey(), entry.getValue().toString());
+  private Integer render(String link, HttpSession session) {
+    Integer currentCount = (Integer) session.getAttribute(link);
+    if (currentCount == null) {
+      session.setAttribute(link, 0);
+      return 0;
+    } else {
+      return currentCount;
     }
+  }
 
-    PrintWriter writer = resp.getWriter();
-    writer.println(template.evaluate());
+  private void clickLink(String uri, HttpSession session) {
+    Integer count = (Integer) session.getAttribute(uri);
+    if (count == null) {
+      count = 0;
+    }
+    session.setAttribute(uri, ++count);
   }
 }
