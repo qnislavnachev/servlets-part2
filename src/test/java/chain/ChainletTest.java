@@ -21,7 +21,7 @@ public class ChainletTest {
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
     @Test
-    public void happyPath() throws Exception {
+    public void noSpecificPageRequested() throws Exception {
         Chainlet chainlet = new Chainlet();
         HttpServletRequest request = context.mock(HttpServletRequest.class);
         HttpServletResponse response = context.mock(HttpServletResponse.class);
