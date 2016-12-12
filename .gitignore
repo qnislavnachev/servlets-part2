@@ -8,6 +8,17 @@
 *.war
 *.ear
 
+# My Ignore
+.gradle/
+.idea/
+build/
+gradle/
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+
+
 # User-specific stuff:
 .idea/workspace.xml
 .idea/tasks.xml
