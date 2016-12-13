@@ -123,20 +123,21 @@ public class CountingServletTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(request).getSession();
+            exactly(2).of(request).getSession();
             will(returnValue(session));
 
-            oneOf(request).getParameter("link");
-            will(returnValue(null));
+            exactly(2).of(request).getParameter("link");
+            will(onConsecutiveCalls(returnValue("1"), returnValue("3")));
 
-            oneOf(response).getWriter();
+            exactly(2).of(response).getWriter();
             will(returnValue(writer));
         }});
 
         countingServlet.doGet(request, response);
+        countingServlet.doGet(request, response);
 
-        assertThat(out.toString().contains("I am link 1 - Clicked: 5"), is(equalTo(true)));
+        assertThat(out.toString().contains("I am link 1 - Clicked: 6"), is(equalTo(true)));
         assertThat(out.toString().contains("I am link 2 - Clicked: 1"), is(equalTo(true)));
-        assertThat(out.toString().contains("I am link 3 - Clicked: 2"), is(equalTo(true)));
+        assertThat(out.toString().contains("I am link 3 - Clicked: 3"), is(equalTo(true)));
     }
 }

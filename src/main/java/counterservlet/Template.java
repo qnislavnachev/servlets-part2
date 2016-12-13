@@ -3,7 +3,7 @@ package counterservlet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Template {
+public final class Template {
     private Map<String, String> placeHolders;
 
     public Template() {
